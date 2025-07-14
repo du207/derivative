@@ -39,7 +39,7 @@ void add_token_list(TokenList* list, TokenType type, char* value); // add a node
 void destroy_token_list(TokenList* list); // destroy and free the list
 
 
-TokenStream* init_token_stream(TokenList* list);
+TokenStream* create_token_stream(TokenList* list);
  // return current TokenNode
 TokenNode* peek_token_stream(TokenStream* s);
 // return current TokenNode and move to the next

@@ -1,6 +1,6 @@
 #include "parse.h"
 
-
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,12 +17,14 @@ static AstNode* parse_primary(TokenStream* s);
 AstNode* parse(char* str) {
     TokenList* token_list = tokenize_string(str);
     if (token_list == NULL) {
+        fprintf(stderr, "Tokenizing error!\n");
         return NULL;
     }
 
-    TokenStream* s = init_token_stream(token_list);
+    TokenStream* s = create_token_stream(token_list);
     AstNode* ast_tree = parse_expression(s);
     if (ast_tree == NULL) {
+        fprintf(stderr, "Parsing error!\n");
         destroy_token_list(token_list);
         destroy_token_stream(s);
         return NULL;
@@ -185,21 +187,25 @@ static AstNode* parse_primary(TokenStream* s) {
     } else if (curr->type == TOKEN_VAR) {
         node = create_var_node();
     } else if (curr->type == TOKEN_FUNC) {
-        // s->current should be lparen
-        if (!(match_token_stream(s, TOKEN_LPAREN))) return NULL;
-        // s->current = expression (after lparen)
+        Function func_name = get_function(curr->value);
 
+        if (func_name == FUNC_INVALID) {
+            fprintf(stderr, "Invalid function '%s'\n", curr->value);
+            return NULL;
+        }
+
+        // s->current should be lparen
+        if (!(match_token_stream(s, TOKEN_LPAREN))) {
+            fprintf(stderr, "Left parenthese expected!\n");
+            return NULL;
+        }
+        // s->current = expression (after lparen)
+        
         AstNode* expr = parse_expression(s);
         if (expr == NULL) return NULL;
         // s->current should be rparen
         if (!(match_token_stream(s, TOKEN_RPAREN))) {
-            destroy_ast_node(expr);
-            return NULL;
-        }
-
-        Function func_name = get_function(curr->value);
-
-        if (func_name == FUNC_INVALID) {
+            fprintf(stderr, "Right parenthese expected!\n");
             destroy_ast_node(expr);
             return NULL;
         }
@@ -210,12 +216,14 @@ static AstNode* parse_primary(TokenStream* s) {
         AstNode* expr = parse_expression(s);
         // s_.current should be rparen
         if (!(match_token_stream(s, TOKEN_RPAREN))) {
+            fprintf(stderr, "Right parenthese expected!\n");
             destroy_ast_node(expr);
             return NULL;
         }
 
         node = expr;
     } else {
+        fprintf(stderr, "Invalid token at '%s'\n", curr->value);
         return NULL;
     }
 

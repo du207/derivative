@@ -63,7 +63,7 @@ void destroy_token_list(TokenList* list) {
 }
 
 
-TokenStream* init_token_stream(TokenList* list){
+TokenStream* create_token_stream(TokenList* list){
     TokenStream* stream = (TokenStream*) malloc(sizeof(TokenStream));
     stream->current = list->head;
     return stream;

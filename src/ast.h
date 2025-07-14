@@ -59,6 +59,7 @@ AstNode* create_unary_node(Unary unary, AstNode* operand);
 AstNode* clone_ast_node(AstNode* node);
 
 void destroy_ast_node(AstNode* node);
+void destroy_ast_node_only(AstNode* node); // no recursive
 
 // Print ast tree nodes (just for test and debug)
 void print_ast_node(AstNode* node, int indent);

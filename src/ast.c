@@ -83,6 +83,12 @@ void destroy_ast_node(AstNode* node) {
     free(node);
 }
 
+// no recursive
+void destroy_ast_node_only(AstNode* node) {
+    if (node == NULL) return;
+    free(node);
+}
+
 
 void print_ast_node(AstNode *node, int indent) {
     for (int i = 0; i < indent; i++) {

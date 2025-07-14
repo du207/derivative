@@ -18,7 +18,7 @@ int main (int argc, char **argv) {
 
     AstNode* ast_tree = parse(user_input);
     if (ast_tree == NULL) {
-        printf("Parsing error!\n");
+        printf("Parsing failed, abort!\n");
         return 1;
     }
 

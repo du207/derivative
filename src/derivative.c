@@ -2,10 +2,11 @@
 
 #include "ast.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 
 
-// DONT FORGET!!: If building a new ast tree, ALWAYS clone the ast node
+// DONT FORGET!!: If building a new ast tree, it should ALWAYS clone the ast node
 //
 // 'derivative_expression' clone the 'AstNode* tree'
 // so it doesn't have responsibility to destroy 'AstNode* tree'
@@ -161,7 +162,3 @@ AstNode* derivative_expression(AstNode* tree) {
     return node;
 }
 
-
-AstNode* simplify_expression(AstNode* tree) {
-
-}
