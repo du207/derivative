@@ -200,7 +200,7 @@ static AstNode* parse_primary(TokenStream* s) {
             return NULL;
         }
         // s->current = expression (after lparen)
-        
+
         AstNode* expr = parse_expression(s);
         if (expr == NULL) return NULL;
         // s->current should be rparen

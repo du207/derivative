@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include "ast.h"
 
-
 /*
 simplify rule:
 x + 0 = x, x * 1 = x, x - 0 = x, 0 - x = -x, x / 1 = x
@@ -18,11 +17,8 @@ ln(e^x) = x, log(10^x) = x
 2x*(x+3) = 2x*x + 3 * 2x (distributive law)
 
 -> simplify mutliple times until doesn't change
-*/
-bool simplify_ast_node(AstNode** tree);
 
 
-/*
 - Constant Calculation rule (when ONLY integers)
 1. calculate multiply, sum, sub
 2. the division will be expressed as fraction
@@ -41,9 +37,19 @@ it just do whole double calculation!!!
 */
 
 
+
+
 // CON_FR: use fraction (every constants should be integer)
 // CON_DB: use double (when even single non-integer contant included)
 typedef enum { CON_FR, CON_DB } ConstantMode;
+
+
+bool simplify_ast_node(AstNode** tree, ConstantMode cm);
+
+
+
+
+
 
 
 #endif

@@ -32,5 +32,4 @@ VAR FUNC is not allowed like x sin(x) because no way to distinguish x and sin(x)
 // if parsing error, return NULL
 AstNode* parse(char* str);
 
-
 #endif

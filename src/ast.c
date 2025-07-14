@@ -1,6 +1,8 @@
 #include "ast.h"
+#include "calc.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 AstNode* create_num_node(double num) {
@@ -114,5 +116,113 @@ void print_ast_node(AstNode *node, int indent) {
     case AST_UNARY:
         printf("[UNARY: %d]\n", node->unary.unary);
         print_ast_node(node->unary.operand, indent+1);
+    }
+}
+
+
+static char* strmerge(const char* a, const char* b) {
+    char* result = malloc(strlen(a) + strlen(b) + 1);
+    strcpy(result, a);
+    strcat(result, b);
+    return result;
+}
+
+static char* strmerge3(const char* a, const char* b, const char* c) {
+    char* ab = strmerge(a, b);
+    char* abc = strmerge(ab, c);
+    free(ab);
+    return abc;
+}
+
+// operator priority
+static int precedence(Operator op) {
+    switch (op) {
+        case OP_ADD:
+        case OP_SUB: return 1;
+        case OP_MUL:
+        case OP_DIV: return 2;
+        case OP_POW: return 3;
+        default: return 0;
+    }
+}
+
+static char* function_to_str(Function func) {
+    switch (func) {
+    case FUNC_SIN:
+        return "sin";
+    case FUNC_COS:
+        return "cos";
+    case FUNC_TAN:
+        return "tan";
+    case FUNC_LN:
+        return "ln";
+    case FUNC_LOG:
+        return "log";
+    case FUNC_EXP:
+        return "exp";
+    case FUNC_INVALID:
+        return "<?>";
+    }
+}
+char* ast_to_infix(AstNode* node) {
+    if (!node) return strdup("<?>");
+
+    switch (node->type) {
+        case AST_NUM: {
+            char buf[64];
+            snprintf(buf, sizeof(buf), "%.10g", node->number);
+            return strdup(buf);
+        }
+        case AST_VAR:
+            return strdup("x");
+        case AST_OP: {
+            char* left_str = ast_to_infix(node->op.left);
+            char* right_str = ast_to_infix(node->op.right);
+
+            // 괄호 필요 여부
+            int my_prec = precedence(node->op.op);
+            int left_prec = (node->op.left && node->op.left->type == AST_OP) ? precedence(node->left->op) : 99;
+            int right_prec = (node->right && node->right->type == AST_OP) ? precedence(node->right->op) : 99;
+
+            if (left_prec < my_prec) {
+                char* temp = left_str;
+                left_str = strmerge3("(", temp, ")");
+                free(temp);
+            }
+
+            if (right_prec < my_prec || (node->op.op == OP_SUB && right_prec == my_prec)) {
+                char* temp = right_str;
+                right_str = strmerge3("(", temp, ")");
+                free(temp);
+            }
+
+            const char* op_str = NULL;
+            switch (node->op.op) {
+                case OP_ADD: op_str = " + "; break;
+                case OP_SUB: op_str = " - "; break;
+                case OP_MUL: op_str = " * "; break;
+                case OP_DIV: op_str = " / "; break;
+                case OP_POW: op_str = " ^ "; break;
+                default:     op_str = " ? "; break;
+            }
+
+            char* expr = strmerge3(left_str, op_str, right_str);
+            free(left_str);
+            free(right_str);
+            return expr;
+        }
+        case AST_FUNC: {
+            char* arg_str = ast_to_infix(node->func.arg);
+            char* temp = strmerge3(function_to_str(node->func.func), "(", arg_str);
+            char* result = strmerge(temp, ")");
+            free(temp);
+            free(arg_str);
+            return result;
+        }
+        case AST_UNARY: {
+            char* operand_str = ast_to_infix(node->unary.operand);
+
+        }
+        }
     }
 }
