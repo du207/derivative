@@ -26,11 +26,20 @@ int main (int argc, char **argv) {
     }
     printf("\n\n");
 
+    while (simplify_ast_node(&ast_tree));
+    char* inflix = ast_to_infix(ast_tree);
+    printf("%s\n", inflix);
+
+    free(inflix);
+
+    return 0;
     AstNode* derv_tree = derivative_expression(ast_tree);
     if (derv_tree == NULL) {
         printf("Derivative error!\n");
         return 1;
     }
+    print_ast_node(derv_tree,0);
+    while (simplify_ast_node(&derv_tree));
 
     char* derv_inflix = ast_to_infix(derv_tree);
     printf("%s\n", derv_inflix);
