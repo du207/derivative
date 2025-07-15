@@ -64,4 +64,6 @@ void destroy_ast_node_only(AstNode* node); // no recursive
 // Print ast tree nodes (just for test and debug)
 void print_ast_node(AstNode* node, int indent);
 
+char* ast_to_infix(AstNode* node);
+
 #endif

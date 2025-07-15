@@ -179,10 +179,10 @@ char* ast_to_infix(AstNode* node) {
             char* left_str = ast_to_infix(node->op.left);
             char* right_str = ast_to_infix(node->op.right);
 
-            // 괄호 필요 여부
+            // is pathensesis needed
             int my_prec = precedence(node->op.op);
-            int left_prec = (node->op.left && node->op.left->type == AST_OP) ? precedence(node->left->op) : 99;
-            int right_prec = (node->right && node->right->type == AST_OP) ? precedence(node->right->op) : 99;
+            int left_prec = (node->op.left && node->op.left->type == AST_OP) ? precedence(node->op.left->op.op) : 99;
+            int right_prec = (node->op.right && node->op.right->type == AST_OP) ? precedence(node->op.right->op.op) : 99;
 
             if (left_prec < my_prec) {
                 char* temp = left_str;
@@ -221,8 +221,9 @@ char* ast_to_infix(AstNode* node) {
         }
         case AST_UNARY: {
             char* operand_str = ast_to_infix(node->unary.operand);
-
-        }
+            char* result = strmerge3("-(", operand_str, ")");
+            free(operand_str);
+            return result;
         }
     }
 }

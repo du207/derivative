@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "ast.h"
 #include "derivative.h"
 #include "parse.h"
+#include "ast.h"
+#include "calc.h"
 
 
 int main (int argc, char **argv) {
@@ -21,8 +24,6 @@ int main (int argc, char **argv) {
         printf("Parsing failed, abort!\n");
         return 1;
     }
-
-    print_ast_node(ast_tree, 0);
     printf("\n\n");
 
     AstNode* derv_tree = derivative_expression(ast_tree);
@@ -30,7 +31,11 @@ int main (int argc, char **argv) {
         printf("Derivative error!\n");
         return 1;
     }
-    print_ast_node(derv_tree, 0);
+
+    char* derv_inflix = ast_to_infix(derv_tree);
+    printf("%s\n", derv_inflix);
+
+    free(derv_inflix);
 
     destroy_ast_node(ast_tree);
     destroy_ast_node(derv_tree);
