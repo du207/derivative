@@ -4,6 +4,7 @@
 #include <string.h>
 #include "token.h"
 
+
 // create token
 TokenNode* create_token_node(TokenType type, char* value, TokenNode* prev, TokenNode* next) {
     TokenNode* token_node = (TokenNode*) malloc(sizeof(TokenNode));
@@ -132,8 +133,6 @@ TokenList* tokenize_string(char* str) {
     // the reason including null char in loop is to create the token
     // from the last numbers or alphabets and create END token
     for (i = 0; i <= str_len; i++) {
-        if (str[i] == ' ') continue; // ignore whitespaces
-
         prev_state = current_state;
         memset(token_value, 0, sizeof(token_value));
 
@@ -208,6 +207,7 @@ TokenList* tokenize_string(char* str) {
             case '\0':
                 add_token_list(token_list, TOKEN_END, NULL);
                 break;
+	    case ' ': break;
             default: // unidentified char found, failed to tokenize
                 goto tokenize_error;
             }

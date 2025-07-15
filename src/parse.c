@@ -70,6 +70,7 @@ static bool check_implicit_mul(TokenStream* s) {
     NUM FUNC
     NUM LPAREN
     VAR LPAREN
+    VAR FUNC
     RPAREN LPAREN
     RPAREN NUM
     RPAREN VAR
@@ -84,6 +85,7 @@ static bool check_implicit_mul(TokenStream* s) {
         || (prev_t == TOKEN_NUM && curr_t == TOKEN_FUNC)
         || (prev_t == TOKEN_NUM && curr_t == TOKEN_LPAREN)
         || (prev_t == TOKEN_VAR && curr_t == TOKEN_LPAREN)
+        || (prev_t == TOKEN_VAR && curr_t == TOKEN_FUNC)
         || (prev_t == TOKEN_RPAREN && curr_t == TOKEN_LPAREN)
         || (prev_t == TOKEN_RPAREN && curr_t == TOKEN_NUM)
         || (prev_t == TOKEN_RPAREN && curr_t == TOKEN_VAR)
